@@ -40,19 +40,29 @@ def main(reel_url):
     audio_path = "audio.wav"
     os.makedirs(download_path, exist_ok=True)
 
-    print("Downloading Instagram Reel...")
-    video_path = download_instagram_reel(reel_url, download_path)
-    if not video_path:
-        print("Failed to download the Instagram Reel.")
-        return
+    try:
+        print("Downloading Instagram Reel...")
+        video_path = download_instagram_reel(reel_url, download_path)
+        if not video_path:
+            print("Failed to download the Instagram Reel.")
+            return
 
-    print("Extracting audio from video...")
-    extract_audio_from_video(video_path, audio_path)
+        print("Extracting audio from video...")
+        extract_audio_from_video(video_path, audio_path)
 
-    print("Transcribing audio...")
-    transcript = transcribe_audio(audio_path)
-    print("Transcript:")
-    print(transcript)
+        print("Transcribing audio...")
+        transcript = transcribe_audio(audio_path)
+        print("Transcript:")
+        print(transcript)
+
+    finally:
+        # Clean up downloaded files and folders
+        if os.path.exists(audio_path):
+            os.remove(audio_path)
+        if os.path.exists(download_path):
+            for file in os.listdir(download_path):
+                os.remove(os.path.join(download_path, file))
+            os.rmdir(download_path)
 
 
 # if __name__ == "__main__":
